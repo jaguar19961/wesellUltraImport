@@ -4,18 +4,42 @@ Pachet Laravel care se conectează la serviciul SOAP Ultra pentru a prelua catal
 
 ## Instalare
 
-1. Adaugă pachetul în `composer.json` (repo privat) și rulează `composer install`.
-2. Înregistrează provider-ul dacă auto-discovery este dezactivat:
+### Cum îl adaugi într-o aplicație Laravel existentă
 
-```php
-WeSellUltra\Import\Providers\UltraImportServiceProvider::class,
-```
+1. În `composer.json` din proiect, declară repo-ul git (dacă pachetul nu este pe Packagist):
 
-3. Publică fișierul de configurare:
+   ```json
+   {
+     "repositories": [
+       {"type": "vcs", "url": "https://github.com/ORG/wesellUltraImport.git"}
+     ]
+   }
+   ```
 
-```bash
-php artisan vendor:publish --tag=config --provider="WeSellUltra\\Import\\Providers\\UltraImportServiceProvider"
-```
+2. Instalează pachetul (folosește versiunea/tag-ul potrivit proiectului tău):
+
+   ```bash
+   composer require wesell/ultra-import:dev-main
+   ```
+
+3. Dacă auto-discovery este dezactivat, adaugă manual provider-ul în `config/app.php`:
+
+   ```php
+   'providers' => [
+       // ...
+       WeSellUltra\Import\Providers\UltraImportServiceProvider::class,
+   ],
+   ```
+
+4. Publică fișierul de configurare și personalizează valorile:
+
+   ```bash
+   php artisan vendor:publish --tag=config --provider="WeSellUltra\\Import\\Providers\\UltraImportServiceProvider"
+   ```
+
+5. Setează în `.env` variabilele principale (vezi secțiunea de configurare) și verifică permisiunile pentru calea de ieșire a feed-ului.
+
+6. Rulează importul manual sau configurează un cron/queued job pentru comanda Artisan `ultra:import`.
 
 ## Configurare
 
