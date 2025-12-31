@@ -59,11 +59,14 @@ class UltraClient
             if ($this->isReady($id)) {
                 $result = $this->getDataById($id);
 
-                if (strtoupper($result['message']) !== 'OK') {
+                $message = strtoupper(trim($result['message']));
+                $data = $result['data'];
+
+                if ($message !== 'OK' && empty($data)) {
                     throw new SoapFault('Server', sprintf('Service %s failed with message: %s', $service, $result['message']));
                 }
 
-                return $result['data'];
+                return $data;
             }
 
             sleep($sleepSeconds);
