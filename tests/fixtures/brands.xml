@@ -1,0 +1,9 @@
+<root>
+    <brand>
+        <UUID>b1</UUID>
+        <name>BrandX</name>
+        <image>
+            <pathGlobal>https://example.com/brand.png</pathGlobal>
+        </image>
+    </brand>
+</root>
