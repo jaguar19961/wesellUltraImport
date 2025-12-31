@@ -46,6 +46,7 @@ Pachet Laravel care se conectează la serviciul SOAP Ultra pentru a prelua catal
 Variabile principale din `config/ultra_import.php`:
 
 - `ULTRA_WSDL` – endpoint-ul WSDL (`https://portal.it-ultra.com/b2b/ru/ws/b2b.1cws?wsdl`).
+- `ULTRA_WSDL_USERNAME` / `ULTRA_WSDL_PASSWORD` – credențiale pentru autentificarea SOAP basic la endpoint.
 - `ULTRA_OUTPUT_PATH` – calea unde se salvează feed-ul XML (implicit `storage/app/ultra/catalog.xml`).
 - `ULTRA_PRODUCT_URL` – șablon URL pentru produse; `{code}` va fi înlocuit cu codul produsului.
 - `ULTRA_POLL_ATTEMPTS` și `ULTRA_POLL_SLEEP` – controlează numărul de încercări și pauza la interogarea `isReady`.

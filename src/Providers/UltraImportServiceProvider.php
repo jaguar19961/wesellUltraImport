@@ -15,8 +15,9 @@ class UltraImportServiceProvider extends ServiceProvider
 
         $this->app->singleton(UltraClient::class, function ($app) {
             $config = $app['config']->get('ultra_import');
+            $options = array_filter($config['options'], static fn ($value) => $value !== null);
 
-            return new UltraClient($config['wsdl'], $config['options']);
+            return new UltraClient($config['wsdl'], $options);
         });
 
         $this->app->singleton(UltraCatalogExporter::class, function ($app) {

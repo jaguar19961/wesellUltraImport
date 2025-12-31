@@ -7,6 +7,8 @@ return [
         'trace' => true,
         'exceptions' => true,
         'cache_wsdl' => WSDL_CACHE_NONE,
+        'login' => env('ULTRA_WSDL_USERNAME'),
+        'password' => env('ULTRA_WSDL_PASSWORD'),
     ],
 
     'output_path' => env('ULTRA_OUTPUT_PATH', storage_path('app/ultra/catalog.xml')),

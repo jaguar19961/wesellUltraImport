@@ -11,20 +11,18 @@ class UltraImportCommand extends Command
 
     protected $description = 'Import Ultra catalog data via SOAP and generate an XML feed.';
 
-    public function __construct(private readonly UltraCatalogExporter $exporter)
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         $all = (bool)$this->option('all');
         $output = $this->option('output');
 
+        /** @var UltraCatalogExporter $exporter */
+        $exporter = $this->laravel->make(UltraCatalogExporter::class);
+
         $this->info('Starting Ultra catalog import...');
 
         try {
-            $path = $this->exporter->export($all, $output);
+            $path = $exporter->export($all, $output);
         } catch (\Throwable $exception) {
             $this->error($exception->getMessage());
 
