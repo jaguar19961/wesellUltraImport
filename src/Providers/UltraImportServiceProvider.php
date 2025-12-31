@@ -15,7 +15,18 @@ class UltraImportServiceProvider extends ServiceProvider
 
         $this->app->singleton(UltraClient::class, function ($app) {
             $config = $app['config']->get('ultra_import');
-            $options = array_filter($config['options'], static fn ($value) => $value !== null);
+            $options = $config['options'];
+
+            if (!isset($options['stream_context']) && !empty($options['login']) && !empty($options['password'])) {
+                $authHeader = 'Authorization: Basic ' . base64_encode($options['login'] . ':' . $options['password']);
+                $options['stream_context'] = stream_context_create([
+                    'http' => [
+                        'header' => $authHeader,
+                    ],
+                ]);
+            }
+
+            $options = array_filter($options, static fn ($value) => $value !== null);
 
             return new UltraClient($config['wsdl'], $options);
         });
@@ -26,7 +37,8 @@ class UltraImportServiceProvider extends ServiceProvider
             return new UltraCatalogExporter(
                 $app->make(UltraClient::class),
                 $config['output_path'],
-                $config['product_url_template']
+                $config['product_url_template'],
+                $config['poll']
             );
         });
     }

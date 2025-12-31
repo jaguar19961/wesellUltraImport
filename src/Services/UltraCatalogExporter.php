@@ -2,6 +2,7 @@
 
 namespace WeSellUltra\Import\Services;
 
+use DateTimeImmutable;
 use DOMDocument;
 use SimpleXMLElement;
 
@@ -10,14 +11,15 @@ class UltraCatalogExporter
     public function __construct(
         private readonly UltraClient $client,
         private readonly string $defaultOutputPath,
-        private readonly string $productUrlTemplate
+        private readonly string $productUrlTemplate,
+        private readonly array $pollConfig
     ) {
     }
 
     public function export(bool $all = true, ?string $outputPath = null): string
     {
         $outputPath ??= $this->defaultOutputPath;
-        $poll = config('ultra_import.poll');
+        $poll = $this->pollConfig;
 
         $categoriesXml = $this->client->fetchData('NOMENCLATURETYPELIST', $all, null, false, $poll['max_attempts'], $poll['sleep_seconds']);
         $brandsXml = $this->client->fetchData('BRAND', $all, null, false, $poll['max_attempts'], $poll['sleep_seconds']);
@@ -193,7 +195,7 @@ class UltraCatalogExporter
         $doc->formatOutput = true;
 
         $catalog = $doc->createElement('yml_catalog');
-        $catalog->setAttribute('date', now()->format('Y-m-d H:i'));
+        $catalog->setAttribute('date', (new DateTimeImmutable('now'))->format('Y-m-d H:i'));
         $doc->appendChild($catalog);
 
         $shop = $doc->createElement('shop');
@@ -213,12 +215,18 @@ class UltraCatalogExporter
 
         $offersNode = $doc->createElement('offers');
         foreach ($products as $product) {
-            $offerNode = $doc->createElement('offer');
-            $offerNode->setAttribute('id', $product['code'] ?: $product['uuid']);
-            $offerNode->setAttribute('productId', $product['uuid']);
-
             $characteristics = $product['characteristics'] ?: ['default' => null];
             foreach ($characteristics as $characteristicId => $characteristic) {
+                $offerNode = $doc->createElement('offer');
+                $offerId = $product['code'] ?: $product['uuid'];
+                if ($characteristicId !== 'default') {
+                    $offerId .= '-' . $characteristicId;
+                    $offerNode->setAttribute('characteristicId', $characteristicId);
+                }
+
+                $offerNode->setAttribute('id', $offerId);
+                $offerNode->setAttribute('productId', $product['uuid']);
+
                 $price = $prices[$product['uuid']][$characteristicId] ?? $prices[$product['uuid']]['default'] ?? null;
                 $balance = $balances[$product['uuid']][$characteristicId] ?? $balances[$product['uuid']]['default'] ?? 0;
 
@@ -235,7 +243,8 @@ class UltraCatalogExporter
                 }
 
                 $offerNode->appendChild($doc->createElement('categoryId', $product['category']));
-                foreach ($product['images'] as $image) {
+                $images = array_merge($product['images'], $characteristic['images'] ?? []);
+                foreach ($images as $image) {
                     if (!empty($image)) {
                         $offerNode->appendChild($doc->createElement('picture', $image));
                     }
@@ -263,7 +272,8 @@ class UltraCatalogExporter
                     $offerNode->appendChild($param);
                 }
 
-                foreach ($product['properties'] as $property) {
+                $properties = array_merge($product['properties'], $characteristic['properties'] ?? []);
+                foreach ($properties as $property) {
                     $spec = $doc->createElement('specification', $property['value']);
                     $spec->setAttribute('name', $property['name']);
                     $spec->setAttribute('type', $property['type']);
@@ -271,12 +281,11 @@ class UltraCatalogExporter
                 }
 
                 if ($characteristicId !== 'default' && $characteristic) {
-                    $offerNode->setAttribute('characteristicId', $characteristicId);
                     $offerNode->appendChild($doc->createElement('characteristicName', $characteristic['name']));
                 }
-            }
 
-            $offersNode->appendChild($offerNode);
+                $offersNode->appendChild($offerNode);
+            }
         }
 
         $shop->appendChild($offersNode);

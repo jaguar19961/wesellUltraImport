@@ -1,0 +1,10 @@
+<root>
+    <price>
+        <UUID>p1</UUID>
+        <Characteristic>c1</Characteristic>
+        <Price>10.50</Price>
+        <PriceType>
+            <valute>MDL</valute>
+        </PriceType>
+    </price>
+</root>

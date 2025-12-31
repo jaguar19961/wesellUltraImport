@@ -1,0 +1,50 @@
+<root>
+    <nomenclature>
+        <UUID>p1</UUID>
+        <code>SKU1</code>
+        <name>Prod1</name>
+        <fullName>Prod1 Full</fullName>
+        <description>Desc</description>
+        <article>ART1</article>
+        <brand>b1</brand>
+        <nomenclatureType>3</nomenclatureType>
+        <imageList>
+            <image>
+                <pathGlobal>https://example.com/p1.png</pathGlobal>
+            </image>
+        </imageList>
+        <propertyList>
+            <propertyValue>
+                <property>
+                    <name>Color</name>
+                </property>
+                <value>
+                    <type>color</type>
+                    <simpleValue>Red</simpleValue>
+                </value>
+            </propertyValue>
+        </propertyList>
+        <characteristicList>
+            <characteristic>
+                <UUID>c1</UUID>
+                <name>Size M</name>
+                <imageList>
+                    <image>
+                        <pathGlobal>https://example.com/c1.png</pathGlobal>
+                    </image>
+                </imageList>
+                <propertyList>
+                    <propertyValue>
+                        <property>
+                            <name>Length</name>
+                        </property>
+                        <value>
+                            <type>number</type>
+                            <simpleValue>10</simpleValue>
+                        </value>
+                    </propertyValue>
+                </propertyList>
+            </characteristic>
+        </characteristicList>
+    </nomenclature>
+</root>

@@ -1,0 +1,7 @@
+<root>
+    <balance>
+        <UUID>p1</UUID>
+        <Characteristic>c1</Characteristic>
+        <quantity>7</quantity>
+    </balance>
+</root>
