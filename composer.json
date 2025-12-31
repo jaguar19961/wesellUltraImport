@@ -1,0 +1,21 @@
+{
+  "name": "wesell/ultra-import",
+  "description": "Laravel package for importing Ultra B2B catalog and exporting XML feeds.",
+  "type": "library",
+  "license": "MIT",
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "WeSellUltra\\Import\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "WeSellUltra\\Import\\Providers\\UltraImportServiceProvider"
+      ]
+    }
+  }
+}
